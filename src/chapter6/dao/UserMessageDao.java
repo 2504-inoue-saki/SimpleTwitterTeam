@@ -27,6 +27,7 @@ public class UserMessageDao {
     		sql.append(" messages.user_id as user_id, ");
     		sql.append(" users.account as account, ");
     		sql.append(" users.name as name, ");
+<<<<<<< HEAD
     		sql.append(" messages.created_date as created_date ");  sql.append("FROM messages ");
     		sql.append("INNER JOIN users ");
     		sql.append("ON messages.user_id = users.id ");
@@ -40,7 +41,25 @@ public class UserMessageDao {
     		}
             sql.append("ORDER BY created_date DESC limit " + num);
             ps = connection.prepareStatement(sql.toString());
+=======
+    		sql.append(" messages.created_date as created_date ");
+    		sql.append("FROM messages ");
+    		sql.append("INNER JOIN users ");
+    		sql.append("ON messages.user_id = users.id ");
+    		sql.append("WHERE messages.created_date BETWEEN ? AND ? ");
+>>>>>>> 2f13e6ca392b09cd831289166c739b19af05b0b7
 
+    		if(userId != null) {
+    			sql.append("AND user_id = ? ");
+    		}
+
+    		if (!StringUtils.isBlank(searchWord)) {
+    			sql.append(" AND messages.text like ? ");
+    		}
+
+            sql.append("ORDER BY created_date DESC limit " + num);
+
+            ps = connection.prepareStatement(sql.toString());
             ps.setString(1, start);
             ps.setString(2, end);
 
@@ -48,11 +67,19 @@ public class UserMessageDao {
     			ps.setInt(3, userId);
 
     			if (!StringUtils.isBlank(searchWord)) {
+<<<<<<< HEAD
     				ps.setString(4, "%" + searchWord + "%");
     			}
     		} else {
     			if (!StringUtils.isBlank(searchWord)) {
     				ps.setString(3, "%" + searchWord + "%");
+=======
+    				ps.setString(4, searchWord + "%");
+    			}
+    		} else {
+    			if (!StringUtils.isBlank(searchWord)) {
+    				ps.setString(3, searchWord + "%");
+>>>>>>> 2f13e6ca392b09cd831289166c739b19af05b0b7
     			}
     		}
 

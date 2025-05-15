@@ -36,6 +36,7 @@ public class MessageService {
     }
 
     public List<UserMessage> select(String userId, String start, String end, String searchWord, String likeSearch) {
+<<<<<<< HEAD
         final int LIMIT_NUM = 1000;
 
         Connection connection = null;
@@ -45,6 +46,16 @@ public class MessageService {
             if(!StringUtils.isEmpty(userId)) {
               id = Integer.parseInt(userId);
             }
+=======
+    	final int LIMIT_NUM = 1000;
+    	Connection connection = null;
+    	try {
+    		connection = getConnection();
+    		Integer id = null;
+    		if(!StringUtils.isEmpty(userId)) {
+    			id = Integer.parseInt(userId);
+    		}
+>>>>>>> 2f13e6ca392b09cd831289166c739b19af05b0b7
 
             //絞り込み(startが入力されていたら)
             if(!StringUtils.isBlank(start)) {
@@ -61,8 +72,14 @@ public class MessageService {
             	end = dateTimeFormat.format(cl.getTime());
             }
 
+<<<<<<< HEAD
             List<UserMessage> messages = new UserMessageDao().select(connection, id, start, end, searchWord, likeSearch, LIMIT_NUM);
             return messages;
+=======
+    		List<UserMessage> messages = new UserMessageDao().select
+    				(connection, id, start, end, searchWord, likeSearch, LIMIT_NUM);
+    		return messages;
+>>>>>>> 2f13e6ca392b09cd831289166c739b19af05b0b7
         } catch (RuntimeException e) {
             rollback(connection);
             throw e;

@@ -53,8 +53,13 @@
 			<form action = "./" action = "get">
 				つぶやき：
 				<input type = "text" name ="word" value = "${searchWord}"/>
+<<<<<<< HEAD
 				<input type="radio" name="radiobutton" value="contain" checked="checked">
 				を含む
+=======
+				<input type="radio" name="radiobutton" value="startFrom" checked="checked">
+				から始まる
+>>>>>>> 2f13e6ca392b09cd831289166c739b19af05b0b7
 				<input type= "submit" value = "検索">
 			</form>
 		</div>
