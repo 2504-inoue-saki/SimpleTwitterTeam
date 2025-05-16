@@ -53,13 +53,10 @@
 			<form action = "./" action = "get">
 				つぶやき：
 				<input type = "text" name ="word" value = "${searchWord}"/>
-<<<<<<< HEAD
-				<input type="radio" name="radiobutton" value="contain" checked="checked">
-				を含む
-=======
-				<input type="radio" name="radiobutton" value="startFrom" checked="checked">
+				<input type="radio" name="radiobutton" value="startFrom" <c:if test = "${startFrom}"> checked="checked"</c:if>>
 				から始まる
->>>>>>> 2f13e6ca392b09cd831289166c739b19af05b0b7
+				<input type="radio" name="radiobutton" value="contain" <c:if test = "${!startFrom}"> checked="checked"</c:if>>
+				を含む
 				<input type= "submit" value = "検索">
 			</form>
 		</div>

@@ -17,82 +17,63 @@ import chapter6.exception.SQLRuntimeException;
 public class UserMessageDao {
 
 	public List<UserMessage> select(Connection connection, Integer userId, String start, String end, String searchWord, String likeSearch, int num) {
+		PreparedStatement ps = null;
+		try {
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT ");
+			sql.append(" messages.id as id, ");
+			sql.append(" messages.text as text, ");
+			sql.append(" messages.user_id as user_id, ");
+			sql.append(" users.account as account, ");
+			sql.append(" users.name as name, ");
+			sql.append(" messages.created_date as created_date ");
+			sql.append("FROM messages ");
+			sql.append("INNER JOIN users ");
+			sql.append("ON messages.user_id = users.id ");
+			sql.append("WHERE messages.created_date BETWEEN ? AND ? ");
 
-        PreparedStatement ps = null;
-        try {
-    		StringBuilder sql = new StringBuilder();
-    		sql.append("SELECT ");
-    		sql.append(" messages.id as id, ");
-    		sql.append(" messages.text as text, ");
-    		sql.append(" messages.user_id as user_id, ");
-    		sql.append(" users.account as account, ");
-    		sql.append(" users.name as name, ");
-<<<<<<< HEAD
-    		sql.append(" messages.created_date as created_date ");  sql.append("FROM messages ");
-    		sql.append("INNER JOIN users ");
-    		sql.append("ON messages.user_id = users.id ");
-    		sql.append("WHERE messages.created_date BETWEEN ? AND ? ");
-    		if(userId != null) {
-    			sql.append("AND user_id = ? ");
-    		}
+			if(userId != null) {
+				sql.append("AND user_id = ? ");
+			}
 
-    		if (!StringUtils.isBlank(searchWord)) {
-    			sql.append(" AND messages.text like ? ");
-    		}
-            sql.append("ORDER BY created_date DESC limit " + num);
-            ps = connection.prepareStatement(sql.toString());
-=======
-    		sql.append(" messages.created_date as created_date ");
-    		sql.append("FROM messages ");
-    		sql.append("INNER JOIN users ");
-    		sql.append("ON messages.user_id = users.id ");
-    		sql.append("WHERE messages.created_date BETWEEN ? AND ? ");
->>>>>>> 2f13e6ca392b09cd831289166c739b19af05b0b7
+			if (!StringUtils.isBlank(searchWord)) {
+				sql.append(" AND messages.text like ? ");
+	 		}
 
-    		if(userId != null) {
-    			sql.append("AND user_id = ? ");
-    		}
+			sql.append("ORDER BY created_date DESC limit " + num);
+			ps = connection.prepareStatement(sql.toString());
+			ps.setString(1, start);
+			ps.setString(2, end);
 
-    		if (!StringUtils.isBlank(searchWord)) {
-    			sql.append(" AND messages.text like ? ");
-    		}
+			if(userId != null) {
+				ps.setInt(3, userId);
 
-            sql.append("ORDER BY created_date DESC limit " + num);
+				if (!StringUtils.isBlank(searchWord)) {
+					if (likeSearch.equals("startFrom")) {
+						ps.setString(4, searchWord + "%");
+					} else {
+						ps.setString(4, "%" + searchWord + "%");
+					}
+				}
+			} else {
+				if (!StringUtils.isBlank(searchWord)) {
+					if (likeSearch.equals("startFrom")) {
+						ps.setString(3, searchWord + "%");
+					} else {
+						ps.setString(3, "%" + searchWord + "%");
+					}
+				}
+			}
 
-            ps = connection.prepareStatement(sql.toString());
-            ps.setString(1, start);
-            ps.setString(2, end);
-
-    		if(userId != null) {
-    			ps.setInt(3, userId);
-
-    			if (!StringUtils.isBlank(searchWord)) {
-<<<<<<< HEAD
-    				ps.setString(4, "%" + searchWord + "%");
-    			}
-    		} else {
-    			if (!StringUtils.isBlank(searchWord)) {
-    				ps.setString(3, "%" + searchWord + "%");
-=======
-    				ps.setString(4, searchWord + "%");
-    			}
-    		} else {
-    			if (!StringUtils.isBlank(searchWord)) {
-    				ps.setString(3, searchWord + "%");
->>>>>>> 2f13e6ca392b09cd831289166c739b19af05b0b7
-    			}
-    		}
-
-            ResultSet rs = ps.executeQuery();
-
-            List<UserMessage> messages = toUserMessages(rs);
-            return messages;
-        } catch (SQLException e) {
-            throw new SQLRuntimeException(e);
-        } finally {
-            close(ps);
-        }
-    }
+			ResultSet rs = ps.executeQuery();
+			List<UserMessage> messages = toUserMessages(rs);
+			return messages;
+		} catch (SQLException e) {
+			throw new SQLRuntimeException(e);
+		} finally {
+			close(ps);
+		}
+	}
 
     private List<UserMessage> toUserMessages(ResultSet rs) throws SQLException {
 
